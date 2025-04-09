@@ -2,20 +2,29 @@ using UnityEngine;
 
 public class destroy : MonoBehaviour
 {
+    GameObject celular;
+    GameObject player;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        destroiObjeto();
+        GameObject celular = GameObject.FindGameObjectWithTag("Objetos");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
-    void destroiObjeto()
-    {
-        //destroi o objeto imediatamente do tempo de execuçao no tempo colocado no 2 parametro
-        Destroy(gameObject, 2f);
+        // Aqui comparamos a distância ao invés de igualdade absoluta
+        if (Vector2.Distance(player.transform.position, celular.transform.position) < 0.1f)
+        {
+            destroiObjeto();
+        }
+
+        void destroiObjeto()
+        {
+            Destroy(gameObject);
+
+        }
     }
 }
