@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13966, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: spotlight
+  m_EditorClassIdentifier: 
+  templateScene: {fileID: 102900000, guid: 8c9cfa26abfee488c85f1582747f6a02, type: 3}
+  templateName: 
+  description: 
+  preview: {fileID: 0}
+  dependencies:
+  - dependency: {fileID: 2800000, guid: 72f68e3bffd6a494abf9a6d051a326fd, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 593595f60a5831f41a04e60082716099, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 8a5efd24c0e465d45a3299c2dbe25df1, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: f40ea16d8438af3478d6691fd7f009ae, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2100000, guid: 4d4cca5a043022844ac2bbdbeee259ac, type: 2}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: f3b6c993280f03d46bdaceed6dd1d85c, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 198acfd929e7be7488b70c3a1b871d6d, type: 3}
+    instantiationMode: 0
+  templatePipeline: {fileID: 0}
+  badge: {fileID: 0}
+  addToDefaults: 0
