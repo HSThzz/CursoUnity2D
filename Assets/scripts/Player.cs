@@ -41,7 +41,6 @@ public class Player : MonoBehaviour {
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
-        playerRigidbody2D.linearVelocity = new Vector2(playerRigidbody2D.linearVelocity.x * speed, playerRigidbody2D.linearVelocity.y);
     }
 
     void SetaMovimentos()

@@ -28,7 +28,7 @@ public class colisoes : MonoBehaviour
         {
         Destroy(colisao.gameObject);
             celulares++;
-        Debug.Log("Coletou" + celulares + "celulares");
+        Debug.Log("Coletou " + celulares + " celulares");
         }
     }
     /*private void OnCollisionExit2D(Collision2D colisao) 

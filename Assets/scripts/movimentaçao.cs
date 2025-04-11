@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class movimentaçao : MonoBehaviour
@@ -5,9 +6,11 @@ public class movimentaçao : MonoBehaviour
     public Texture2D mousePonteiro;
     public Rigidbody2D meuCorpo;
     public SpriteRenderer flip;
+    private Animator player;
 
     public float movSpeed = 5f;
     public float forcaPulo = 6f;
+    public bool jump = false;   
 
     private float horizontal;
     private bool estaNoChao;
@@ -20,41 +23,57 @@ public class movimentaçao : MonoBehaviour
         Cursor.SetCursor(mousePonteiro, Vector2.zero, CursorMode.Auto);
         meuCorpo = GetComponent<Rigidbody2D>();
         flip = GetComponent<SpriteRenderer>();
+        player = GetComponent<Animator>();  
     }
 
     void Update()
     {
-        horizontal = Input.GetAxis("Horizontal");
+        horizontal = Input.GetAxisRaw("Horizontal");
 
-        // Flip
-        if (horizontal < 0)
-            flip.flipX = true;
-        else if (horizontal > 0)
-            flip.flipX = false;
 
         // Movimento horizontal
-        meuCorpo.velocity = new Vector2(horizontal * movSpeed, meuCorpo.velocity.y);
+        //meuCorpo.velocity = new Vector2(horizontal * movSpeed, meuCorpo.velocity.y);
 
         // Checa se está no chão
         estaNoChao = Physics2D.OverlapCircle(groundCheck.position, 0.2f, camadaChao);
+        player.SetBool("estaNoChao", estaNoChao);
 
         // Pulo
         if (Input.GetKeyDown(KeyCode.Space) && estaNoChao)
         {
+            jump = true;    
             meuCorpo.velocity = new Vector2(meuCorpo.velocity.x, forcaPulo);
         }
+
+        executaM();
     }
 
-    // Gizmo para ver o GroundCheck
-    void OnDrawGizmosSelected()
+    private void FixedUpdate()
     {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, 0.2f);
-        }
+        moveP(horizontal);
     }
-void fliparS()
+
+    void executaM()
+    {
+        player.SetBool("run", meuCorpo.velocity.x != 0f && estaNoChao);
+        player.SetBool("jump", meuCorpo.velocity.y!= 0f && jump);
+        fliparT();
+    }
+    private void moveP(float horizontal)
+    {
+        meuCorpo.velocity = new Vector2(horizontal * movSpeed, meuCorpo.velocity.y);
+
+
+    }
+
+    void jumpM()
+    {
+        meuCorpo.AddForce(new Vector2(0f, forcaPulo));
+        estaNoChao = false; 
+        jump = false;   
+    }
+
+    void fliparS()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -82,7 +101,3 @@ void fliparS()
         transform.localScale = escala;
     }
 }
-
-
-
-
