@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,13 +11,24 @@ public class movimentaçao : MonoBehaviour
     private Animator player;
 
     public float movSpeed = 5f;
-    public float forcaPulo = 6f;
-    public bool jump = false;   
+    public float forcaPulo = 190;
+    public bool jump = false;
+    [SerializeField] private int countPulo = 1;
+    [SerializeField] private int maxjump = 2;
 
     private float horizontal;
     private bool estaNoChao;
+    private bool facingright = true;
 
-    [SerializeField] private Transform groundCheck;
+    //tiro
+    public float velTiro;
+    public GameObject tiroPrefab;
+
+    //tempo tiro
+    public float delaytiro;
+    private bool tirodisparado;
+
+    [SerializeField] private Transform groundCheck, bala;
     [SerializeField] private LayerMask camadaChao;
 
     void Start()
@@ -30,59 +43,75 @@ public class movimentaçao : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
 
-
-        // Movimento horizontal
-        //meuCorpo.velocity = new Vector2(horizontal * movSpeed, meuCorpo.velocity.y);
-
         // Checa se está no chão
         estaNoChao = Physics2D.OverlapCircle(groundCheck.position, 0.2f, camadaChao);
+
         player.SetBool("estaNoChao", estaNoChao);
 
-        // Pulo
-        if (Input.GetKeyDown(KeyCode.Space) && estaNoChao)
-        {
-            jump = true;    
-            meuCorpo.velocity = new Vector2(meuCorpo.velocity.x, forcaPulo);
+
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        { 
+            jump = true;
+            countPulo++;
+            
+        }
+        if (Input.GetMouseButtonDown(0) && tirodisparado == false) 
+        { 
+            if(meuCorpo.velocity.x != 0 && estaNoChao)
+            {
+                atirar();
+            }
         }
 
-        executaM();
+        if(estaNoChao)
+        {
+            countPulo = 1;
+        }
+        animacoes();
     }
 
     private void FixedUpdate()
     {
-        moveP(horizontal);
+        MovHorizontal(horizontal);
+        if (jump && countPulo <= maxjump)
+        {
+            JumpPlayer();
+        }
     }
 
-    void executaM()
+    void animacoes()
     {
+        player.SetFloat("velocidadeY", meuCorpo.velocity.y);
         player.SetBool("run", meuCorpo.velocity.x != 0f && estaNoChao);
-        player.SetBool("jump", meuCorpo.velocity.y!= 0f && jump);
-        fliparT();
+        player.SetBool("jump", !estaNoChao);
     }
-    private void moveP(float horizontal)
+    private void MovHorizontal(float horizontal)
     {
         meuCorpo.velocity = new Vector2(horizontal * movSpeed, meuCorpo.velocity.y);
 
-
+        
+        if ((horizontal > 0 && !facingright) || (horizontal < 0 && facingright))
+        {
+            flipar();
+        }
     }
 
-    void jumpM()
+
+    void JumpPlayer()
     {
+
         meuCorpo.AddForce(new Vector2(0f, forcaPulo));
         estaNoChao = false; 
         jump = false;   
     }
 
-    void fliparS()
+    void flipar()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            flip.flipX = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            flip.flipX = false;
-        }
+        facingright = !facingright;
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        velTiro *= -1;  
+        transform.localScale = theScale;    
     }
 
     void fliparT()
@@ -91,6 +120,7 @@ public class movimentaçao : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftArrow) && escala.x > 0)
         {
+            
             escala.x *= -1f;
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow) && escala.x < 0)
@@ -100,4 +130,27 @@ public class movimentaçao : MonoBehaviour
 
         transform.localScale = escala;
     }
+
+    void atirar()
+    {
+        tirodisparado = true;
+        StartCoroutine("temptiro");
+        GameObject temptiro = Instantiate(tiroPrefab);
+        temptiro.transform.position = bala.position;
+
+        //flip
+        if (facingright == false)
+        {
+        temptiro.GetComponent<SpriteRenderer>().flipX = true;
+        }
+
+        temptiro.GetComponent<Rigidbody2D>().velocity = new Vector2(velTiro, 0f); 
+    }
+    IEnumerator temptiro()
+    {
+        yield return new WaitForSeconds(delaytiro);
+        tirodisparado = false;
+    }
+
+    
 }
